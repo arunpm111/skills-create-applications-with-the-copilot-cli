@@ -1,11 +1,19 @@
 /**
  * Unit tests for calculator.js
  *
+ * Covers all arithmetic operations:
  * Covers all four basic arithmetic operations:
  *  - Addition (+)
  *  - Subtraction (-)
  *  - Multiplication (x / *)
  *  - Division (÷ / /)
+ *  - Modulo (%)
+ *  - Exponentiation (**)
+ *  - Square Root (sqrt)
+ * Including edge cases such as division by zero, negatives, and decimals.
+ */
+
+const { add, subtract, multiply, divide, modulo, exponentiate, sqrt } = require('../calculator');
  * Including edge cases such as division by zero, negatives, and decimals.
  */
 
@@ -128,5 +136,94 @@ describe('divide', () => {
 
   test('throws an error on division of zero by zero', () => {
     expect(() => divide(0, 0)).toThrow('Division by zero');
+  });
+});
+
+// --- Modulo ---
+describe('modulo', () => {
+  test('10 % 3 = 1', () => {
+    expect(modulo(10, 3)).toBe(1);
+  });
+
+  test('10 % 5 = 0 (evenly divisible)', () => {
+    expect(modulo(10, 5)).toBe(0);
+  });
+
+  test('7 % 4 = 3', () => {
+    expect(modulo(7, 4)).toBe(3);
+  });
+
+  test('negative dividend: -7 % 3 = -1', () => {
+    expect(modulo(-7, 3)).toBe(-1);
+  });
+
+  test('negative divisor: 7 % -3 = 1', () => {
+    expect(modulo(7, -3)).toBe(1);
+  });
+
+  test('throws an error on modulo by zero', () => {
+    expect(() => modulo(10, 0)).toThrow('Division by zero');
+  });
+});
+
+// --- Exponentiation ---
+describe('exponentiate', () => {
+  test('2 ** 3 = 8', () => {
+    expect(exponentiate(2, 3)).toBe(8);
+  });
+
+  test('5 ** 0 = 1 (any number to the power of 0)', () => {
+    expect(exponentiate(5, 0)).toBe(1);
+  });
+
+  test('5 ** 1 = 5 (any number to the power of 1)', () => {
+    expect(exponentiate(5, 1)).toBe(5);
+  });
+
+  test('2 ** 10 = 1024', () => {
+    expect(exponentiate(2, 10)).toBe(1024);
+  });
+
+  test('negative base: (-2) ** 3 = -8', () => {
+    expect(exponentiate(-2, 3)).toBe(-8);
+  });
+
+  test('fractional exponent: 4 ** 0.5 = 2 (square root via exponentiation)', () => {
+    expect(exponentiate(4, 0.5)).toBeCloseTo(2);
+  });
+
+  test('negative exponent: 2 ** -1 = 0.5', () => {
+    expect(exponentiate(2, -1)).toBeCloseTo(0.5);
+  });
+});
+
+// --- Square Root ---
+describe('sqrt', () => {
+  test('sqrt(4) = 2', () => {
+    expect(sqrt(4)).toBe(2);
+  });
+
+  test('sqrt(9) = 3', () => {
+    expect(sqrt(9)).toBe(3);
+  });
+
+  test('sqrt(0) = 0', () => {
+    expect(sqrt(0)).toBe(0);
+  });
+
+  test('sqrt(2) is approximately 1.414', () => {
+    expect(sqrt(2)).toBeCloseTo(1.414, 3);
+  });
+
+  test('sqrt(1) = 1', () => {
+    expect(sqrt(1)).toBe(1);
+  });
+
+  test('throws an error for negative input', () => {
+    expect(() => sqrt(-1)).toThrow('Cannot compute square root of a negative number');
+  });
+
+  test('throws an error for negative input (-100)', () => {
+    expect(() => sqrt(-100)).toThrow('Cannot compute square root of a negative number');
   });
 });
