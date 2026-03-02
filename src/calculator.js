@@ -9,6 +9,10 @@
  *  - Modulo (%)            : remainder of division (throws on division by zero)
  *  - Exponentiation (**)   : raise a number to a power
  *  - Square Root (sqrt)    : compute the square root of a number (throws on negative input)
+ *  - Addition (+)       : add two numbers
+ *  - Subtraction (-)    : subtract one number from another
+ *  - Multiplication (x) : multiply two numbers
+ *  - Division (÷)       : divide one number by another (throws on division by zero)
  */
 
 // Returns the sum of a and b
@@ -77,6 +81,15 @@ if (require.main === module) {
   if (!a || !operator || !b) {
     console.error('Usage: node calculator.js <num1> <operator> <num2>');
     console.error('Operators: + - x * ÷ / % **');
+module.exports = { add, subtract, multiply, divide };
+
+// CLI entry point: node calculator.js <num1> <operator> <num2>
+if (require.main === module) {
+  const [,, a, operator, b] = process.argv;
+
+  if (!a || !operator || !b) {
+    console.error('Usage: node calculator.js <num1> <operator> <num2>');
+    console.error('Operators: + - x ÷');
     process.exit(1);
   }
 
@@ -118,6 +131,24 @@ if (require.main === module) {
   } catch (err) {
     console.error(`Error: ${err.message}`);
     process.exit(1);
+  switch (operator) {
+    case '+':
+      result = add(num1, num2);
+      break;
+    case '-':
+      result = subtract(num1, num2);
+      break;
+    case 'x':
+    case '*':
+      result = multiply(num1, num2);
+      break;
+    case '÷':
+    case '/':
+      result = divide(num1, num2);
+      break;
+    default:
+      console.error(`Error: Unknown operator '${operator}'. Use +, -, x, or ÷`);
+      process.exit(1);
   }
 
   console.log(`${num1} ${operator} ${num2} = ${result}`);
