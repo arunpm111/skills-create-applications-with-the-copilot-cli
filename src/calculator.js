@@ -2,6 +2,13 @@
  * Node.js CLI Calculator
  *
  * Supported operations:
+ *  - Addition (+)          : add two numbers
+ *  - Subtraction (-)       : subtract one number from another
+ *  - Multiplication (x)    : multiply two numbers
+ *  - Division (÷)          : divide one number by another (throws on division by zero)
+ *  - Modulo (%)            : remainder of division (throws on division by zero)
+ *  - Exponentiation (**)   : raise a number to a power
+ *  - Square Root (sqrt)    : compute the square root of a number (throws on negative input)
  *  - Addition (+)       : add two numbers
  *  - Subtraction (-)    : subtract one number from another
  *  - Multiplication (x) : multiply two numbers
@@ -50,6 +57,46 @@ function squareRoot(n) {
 }
 
 module.exports = { add, subtract, multiply, divide, modulo, power, squareRoot };
+// Returns a raised to the power of b
+function exponentiate(a, b) {
+  return a ** b;
+}
+
+// Returns the square root of a; throws an error if a is negative
+function sqrt(a) {
+  if (a < 0) throw new Error('Cannot compute square root of a negative number');
+  return Math.sqrt(a);
+}
+
+module.exports = { add, subtract, multiply, divide, modulo, exponentiate, sqrt };
+
+// CLI entry point: node calculator.js <num1> <operator> <num2>
+// For sqrt: node calculator.js sqrt <num>
+if (require.main === module) {
+  const args = process.argv.slice(2);
+
+  // Handle single-operand sqrt: node calculator.js sqrt <num>
+  if (args[0] === 'sqrt') {
+    const num = parseFloat(args[1]);
+    if (isNaN(num)) {
+      console.error('Usage: node calculator.js sqrt <num>');
+      process.exit(1);
+    }
+    try {
+      console.log(`sqrt(${num}) = ${sqrt(num)}`);
+    } catch (err) {
+      console.error(`Error: ${err.message}`);
+      process.exit(1);
+    }
+    process.exit(0);
+  }
+
+  const [a, operator, b] = args;
+
+  if (!a || !operator || !b) {
+    console.error('Usage: node calculator.js <num1> <operator> <num2>');
+    console.error('Operators: + - x * ÷ / % **');
+module.exports = { add, subtract, multiply, divide };
 
 // CLI entry point: node calculator.js <num1> <operator> <num2>
 //                  node calculator.js sqrt <num>
@@ -92,6 +139,26 @@ if (require.main === module) {
       case '/':  result = divide(num1, num2); break;
       case '%':  result = modulo(num1, num2); break;
       case '**': result = power(num1, num2); break;
+      case '+':
+        result = add(num1, num2);
+        break;
+      case '-':
+        result = subtract(num1, num2);
+        break;
+      case 'x':
+      case '*':
+        result = multiply(num1, num2);
+        break;
+      case '÷':
+      case '/':
+        result = divide(num1, num2);
+        break;
+      case '%':
+        result = modulo(num1, num2);
+        break;
+      case '**':
+        result = exponentiate(num1, num2);
+        break;
       default:
         console.error(`Error: Unknown operator '${operator}'. Use +, -, x, ÷, %, or **`);
         process.exit(1);
@@ -99,6 +166,27 @@ if (require.main === module) {
   } catch (e) {
     console.error(`Error: ${e.message}`);
     process.exit(1);
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
+  switch (operator) {
+    case '+':
+      result = add(num1, num2);
+      break;
+    case '-':
+      result = subtract(num1, num2);
+      break;
+    case 'x':
+    case '*':
+      result = multiply(num1, num2);
+      break;
+    case '÷':
+    case '/':
+      result = divide(num1, num2);
+      break;
+    default:
+      console.error(`Error: Unknown operator '${operator}'. Use +, -, x, or ÷`);
+      process.exit(1);
   }
 
   console.log(`${num1} ${operator} ${num2} = ${result}`);
